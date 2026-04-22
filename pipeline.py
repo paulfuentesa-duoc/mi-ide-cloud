@@ -18,7 +18,7 @@ def run_orchestator():
     print("--- Lectura del clima en tiempo real")
     total_lecturas=[]
     
-    # We take 3 snapshots to simulate a stream
+    # Tomamos 5 instantaneas para simular tiempo real
     for i in range(5):
         print(f"  > instantanea {i+1}...")
         df_snap = leer_clima_tiempo_real()
@@ -30,6 +30,8 @@ def run_orchestator():
         almacen_datos['clima'] = pd.concat(total_lecturas, ignore_index=True)
     else:
         almacen_datos['clima'] = pd.DataFrame()
+
+    print("--- Resumen de datos sin transformar")
 
     for elemento, df in almacen_datos.items():
         print(f"\n📍 FUENTE: {elemento}")
