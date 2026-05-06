@@ -4,6 +4,8 @@ import time
 from ingestion.lectura_csv import leer_datos_csv
 from ingestion.leer_batch import leer_datos_batch
 from ingestion.fuente_realtime import leer_clima_tiempo_real
+from procesamiento.transformacion import generar_transformaciones
+
 
 def run_orchestator():
 
@@ -34,14 +36,33 @@ def run_orchestator():
     print("--- Resumen de datos sin transformar")
 
     for elemento, df in almacen_datos.items():
-        print(f"\n📍 FUENTE: {elemento}")
+        print(f"\nFUENTE: {elemento}")
         if not df.empty:
             print(f"Rows: {len(df)} | Columns: {list(df.columns)}")
             print(df.head(2))
         else:
             print("Empty Table (Check connection)")
 
+    #return almacen_datos
+
+ 
+
+    almacen_datos = generar_transformaciones(almacen_datos)
+
+    print("\n--- Resumen de datos final")
+    for elemento, df in almacen_datos.items():
+        print(f"\FUENTE/TRANSFORMACIÓN: {elemento}")
+        # Verificamos si es un DataFrame o una Serie (como el resumen de groupby)
+        if hasattr(df, 'empty') and not df.empty:
+            print(df.head(2) if hasattr(df, 'head') else df)
+        elif isinstance(df, pd.Series):
+            print(df)
+        else:
+            print("Sin datos o formato no reconocido")
+    
     return almacen_datos
+
+
 
 if __name__ == "__main__":
     results=run_orchestator()
